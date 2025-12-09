@@ -10,8 +10,8 @@ import json
 import re
 
 # Set your OpenAI API key
-import os
-api_key = "YOUR API KEY"
+
+api_key = "YOUR_API_KEY"
 
 model = "gpt-4o-mini"
 
@@ -75,11 +75,24 @@ class GptQueryIntentHandler(AbstractRequestHandler):
         session_attr["chat_history"].append((query, response_text))
         session_attr["last_context"] = extract_context(query, response_text)
         
-        # Return the full response message without appending follow-up questions
+        # Format the response with follow-up suggestions if available
         response = response_text
+        if followup_questions and len(followup_questions) > 0:
+            # Add a short pause before the suggestions
+            response += " <break time=\"0.5s\"/> "
+            response += "You could ask: "
+            # Join with 'or' for the last question
+            if len(followup_questions) > 1:
+                response += ", ".join([f"'{q}'" for q in followup_questions[:-1]])
+                response += f", or '{followup_questions[-1]}'"
+            else:
+                response += f"'{followup_questions[0]}'"
+            response += ". <break time=\"0.5s\"/> What would you like to know?"
         
-        # Prepare a simple reprompt
-        reprompt_text = "What else would you like to know?"
+        # Prepare response with reprompt that includes the follow-up questions
+        reprompt_text = "You can ask me another question or say stop to end the conversation."
+        if 'followup_questions' in session_attr and session_attr['followup_questions']:
+            reprompt_text = "You can ask me another question, say 'next' to hear more suggestions, or say stop to end the conversation."
         
         return (
             handler_input.response_builder
