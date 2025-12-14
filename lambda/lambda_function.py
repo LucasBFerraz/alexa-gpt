@@ -13,6 +13,9 @@ import re
 
 api_key = "YOUR_API_KEY"
 
+# Set your OpenAI API base URL
+api_base_url = "api.openai.com"
+
 model = "gpt-4o-mini"
 
 logger = logging.getLogger(__name__)
@@ -174,7 +177,7 @@ def generate_followup_questions(conversation_context, query, response, count=2):
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
         }
-        url = "https://api.openai.com/v1/chat/completions"
+        url = f"https://{api_base_url}/v1/chat/completions"
         
         # Prepare a focused prompt for brief follow-ups
         messages = [
@@ -229,7 +232,7 @@ def generate_gpt_response(chat_history, new_question, is_followup=False):
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json"
     }
-    url = "https://api.openai.com/v1/chat/completions"
+    url = f"https://{api_base_url}/v1/chat/completions"
     
     # Create a more informative system message based on whether this is a follow-up
     system_message = "You are a helpful assistant. Answer in 50 words or less."
