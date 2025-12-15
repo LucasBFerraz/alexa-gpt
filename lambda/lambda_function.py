@@ -11,12 +11,12 @@ import re
 
 # Set your OpenAI API key
 
-api_key = "YOUR_API_KEY"
+api_key = "your-token"
 
 # Set your OpenAI API base URL
 api_base_url = "api.openai.com"
 
-model = "gpt-4o-mini"
+model = "gpt-5-mini"
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -30,7 +30,7 @@ class LaunchRequestHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        speak_output = "Chat G.P.T. mode activated"
+        speak_output = "Fala comigo diabo"
 
         session_attr = handler_input.attributes_manager.session_attributes
         session_attr["chat_history"] = []
@@ -93,9 +93,9 @@ class GptQueryIntentHandler(AbstractRequestHandler):
             response += ". <break time=\"0.5s\"/> What would you like to know?"
         
         # Prepare response with reprompt that includes the follow-up questions
-        reprompt_text = "You can ask me another question or say stop to end the conversation."
+        reprompt_text = "Você pode me fazer outra pergunta ou dizer parar para encerrar a conversa."
         if 'followup_questions' in session_attr and session_attr['followup_questions']:
-            reprompt_text = "You can ask me another question, say 'next' to hear more suggestions, or say stop to end the conversation."
+            reprompt_text = "Você pode me fazer outra pergunta, dizer 'próximo' para ouvir mais sugestões, ou dizer parar para encerrar a conversa."
         
         return (
             handler_input.response_builder
@@ -114,7 +114,7 @@ class CatchAllExceptionHandler(AbstractExceptionHandler):
         # type: (HandlerInput, Exception) -> Response
         logger.error(exception, exc_info=True)
 
-        speak_output = "Sorry, I had trouble doing what you asked. Please try again."
+        speak_output = "Não entendi o que você disse. Pode repetir?"
 
         return (
             handler_input.response_builder
@@ -132,7 +132,7 @@ class CancelOrStopIntentHandler(AbstractRequestHandler):
 
     def handle(self, handler_input):
         # type: (HandlerInput) -> Response
-        speak_output = "Leaving Chat G.P.T. mode"
+        speak_output = "Já é. Vou picar a mula."
 
         return (
             handler_input.response_builder
@@ -295,7 +295,7 @@ class ClearContextIntentHandler(AbstractRequestHandler):
         session_attr["chat_history"] = []
         session_attr["last_context"] = None
         
-        speak_output = "I've cleared our conversation history. What would you like to talk about?"
+        speak_output = "Eu limpei nosso histórico de conversa. Sobre o que você quer falar agora?"
         
         return (
             handler_input.response_builder
